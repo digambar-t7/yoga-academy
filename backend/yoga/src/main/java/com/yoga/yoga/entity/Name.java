@@ -31,4 +31,9 @@ public class Name {
         this.lastName = lastName;
     }
 
+    @Override
+    public String toString() {
+        return "Name [firstName=" + firstName + ", lastName=" + lastName + "]";
+    }
+
 }

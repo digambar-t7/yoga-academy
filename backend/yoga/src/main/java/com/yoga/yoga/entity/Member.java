@@ -44,6 +44,14 @@ public class Member {
         this.nextBatch = nextBatch;
     }
 
+    @Override
+    public String toString() {
+        return "Member [id=" + id + ", name=" + name + ", email=" + email + ", dob=" + dob + ", doj=" + doj
+                + ", dateOfChange=" + dateOfChange + ", contactno=" + contactno + ", paidMonth=" + paidMonth
+                + ", gender=" + gender + ", city=" + city + ", currBatch=" + currBatch + ", nextBatch=" + nextBatch
+                + "]";
+    }
+
     public long getId() {
         return id;
     }
