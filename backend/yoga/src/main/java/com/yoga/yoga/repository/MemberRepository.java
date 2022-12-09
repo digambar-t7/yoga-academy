@@ -8,4 +8,8 @@ import com.yoga.yoga.entity.Member;
 @Repository
 public interface MemberRepository extends JpaRepository<Member, Long> {
 
+    Member findByContactno(String contactno);
+
+    Member findByEmail(String email);
+
 }

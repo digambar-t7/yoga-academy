@@ -1,6 +1,7 @@
 package com.yoga.yoga.serviceimpl;
 
 import java.time.LocalDate;
+import java.time.Period;
 import java.util.List;
 import java.util.Optional;
 
@@ -24,6 +25,16 @@ public class MemberServiceImpl implements MemberService {
 
     @Override
     public Member registerMember(Member member) {
+        int age = Period.between(member.getDob(), LocalDate.now()).getYears();
+        if (age < 18 || age > 65) {
+            return null;
+        }
+        if (member.getContactno() != null && this.memberRepository.findByContactno(member.getContactno()) != null) {
+            return null;
+        }
+        if (member.getEmail() != null && this.memberRepository.findByEmail(member.getEmail()) != null) {
+            return null;
+        }
         return this.memberRepository.save(member);
     }
 
