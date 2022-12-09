@@ -12,6 +12,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.yoga.yoga.entity.Member;
+import com.yoga.yoga.exceptions.AgeBeyondRangeException;
+import com.yoga.yoga.exceptions.MemberAlreadyRegisteredException;
+import com.yoga.yoga.exceptions.MemberNotFoundException;
+import com.yoga.yoga.exceptions.PaymentDoneAlreadyException;
 import com.yoga.yoga.service.MemberService;
 
 @RestController
@@ -25,19 +29,26 @@ public class MemberController {
         this.memberService = memberService;
     }
 
+    @GetMapping("getmember/{id}")
+    private ResponseEntity<Member> getMemberWithId(@PathVariable("id") long mid) throws MemberNotFoundException {
+        return ResponseEntity.status(302).body(this.memberService.getMemberWithId(mid));
+    }
+
     @GetMapping("getallmembers")
     private ResponseEntity<List<Member>> getAllMembers() {
         return ResponseEntity.status(200).body(this.memberService.getAllMembers());
     }
 
     @PostMapping("register")
-    private ResponseEntity<Member> registerMember(@RequestBody Member member) {
+    private ResponseEntity<Member> registerMember(@RequestBody Member member)
+            throws AgeBeyondRangeException, MemberAlreadyRegisteredException {
         Member mem = this.memberService.registerMember(member);
         return ResponseEntity.status(201).body(mem);
     }
 
     @PostMapping("makepayment/{id}")
-    private ResponseEntity<String> makePayment(@PathVariable("id") long mid) {
+    private ResponseEntity<String> makePayment(@PathVariable("id") long mid)
+            throws MemberNotFoundException, PaymentDoneAlreadyException {
         if (this.memberService.makePayment(mid)) {
             return ResponseEntity.status(200)
                     .body("Payment successful for the month of : " + LocalDate.now().getMonth());
