@@ -4,8 +4,10 @@ import java.time.LocalDate;
 import java.time.Period;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.convert.JodaTimeConverters.LocalDateTimeToDateConverter;
 import org.springframework.stereotype.Service;
 
 import com.yoga.yoga.entity.Member;
@@ -44,7 +46,11 @@ public class MemberServiceImpl implements MemberService {
 
     @Override
     public List<Member> getAllMembers() {
-        return this.memberRepository.findAll();
+        List<Member> list = this.memberRepository.findAll();
+        for (Member member : list) {
+            updateBatch(member);
+        }
+        return list;
     }
 
     @Override
@@ -69,10 +75,36 @@ public class MemberServiceImpl implements MemberService {
     public Member getMemberWithId(long mid) throws MemberNotFoundException {
         Optional<Member> member = this.memberRepository.findById(mid);
         if (member.isPresent()) {
+            updateBatch(member.get());
             return member.get();
         } else {
             throw new MemberNotFoundException("Member with requested ID not found.");
         }
+    }
+
+    @Override
+    public Member shiftBatch(long mid, String next) throws MemberNotFoundException {
+        Optional<Member> optMember = this.memberRepository.findById(mid);
+        if (optMember.isEmpty()) {
+            throw new MemberNotFoundException("Member with requested ID not found.");
+        }
+        Member member = optMember.get();
+        if (member.getNextBatch() == null || !member.getNextBatch().equals(next)) {
+            member.setDateOfChange(LocalDate.now());
+            member.setNextBatch(next);
+            return member;
+        }
+        return null;
+    }
+
+    private void updateBatch(Member member) {
+        if (member.getDateOfChange() == null || member.getDateOfChange().getMonth() == LocalDate.now().getMonth()) {
+            return;
+        }
+        member.setCurrBatch(member.getNextBatch());
+        member.setNextBatch(null);
+        member.setDateOfChange(null);
+        this.memberRepository.save(member);
     }
 
 }

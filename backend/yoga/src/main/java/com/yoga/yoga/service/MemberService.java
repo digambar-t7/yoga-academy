@@ -21,4 +21,6 @@ public interface MemberService {
 
     Member getMemberWithId(long mid) throws MemberNotFoundException;
 
+    Member shiftBatch(long mid, String next) throws MemberNotFoundException;
+
 }
