@@ -6,10 +6,6 @@ import Form from 'react-bootstrap/Form';
 import Row from 'react-bootstrap/Row';
 
 function Register() {
-
-    const months = ['JANUARY', 'FEBRUARY', 'MARCH', 'APRIL', 'MAY', 'JUNE', 'JULY', 'AUGUST', 'SEPTEMBER', 'OCTOBER',
-        'NOVEMBER', 'DECEMBER']
-
     const [member, setMember] = useState({
         firstName: '',
         lastName: '',
