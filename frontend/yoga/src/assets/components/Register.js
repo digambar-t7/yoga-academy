@@ -52,9 +52,18 @@ function Register() {
                         </Form.Select>
                     </Col>
                 </Row>
-                <Button className='my-3' variant="primary" type="submit">
-                    Submit
-                </Button>
+                <Row>
+                    <Col>
+                        <Button className='my-3' variant="primary" type="submit">
+                            Pay fees : 500
+                        </Button>
+                    </Col>
+                    <Col>
+                        <Button className='my-3' variant="primary" type="submit">
+                            Submit
+                        </Button>
+                    </Col>
+                </Row>
             </Form>
         </Container>
     );
