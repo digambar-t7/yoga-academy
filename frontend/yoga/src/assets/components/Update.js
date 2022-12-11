@@ -1,14 +1,14 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { Modal, Button, Form, Row, Col } from 'react-bootstrap';
 import months from './Months';
 
 const Update = (props) => {
-    const { firstName, lastName, email, batch, paidMonth } = props.member
+    const { name, email, currBatch, paidMonth } = props.member
     const [mem, setMem] = useState({
         email: email,
-        batch: batch,
+        batch: currBatch,
     })
-    const [feeStatus, setFeeStatus] = useState(paidMonth == months[new Date().getMonth()])
+    const [feeStatus, setFeeStatus] = useState(paidMonth === months[new Date().getMonth()])
     const [monthPaid, setMonthPaid] = useState(paidMonth)
 
     const submit = () => {
@@ -19,6 +19,11 @@ const Update = (props) => {
         setFeeStatus(!feeStatus)
         setMonthPaid(months[new Date().getMonth()])
     }
+
+    const handleChange = (e) => {
+        setMem({ ...mem, [e.target.name]: [e.target.value] })
+    }
+
     return (
         <Modal
             {...props}
@@ -38,8 +43,7 @@ const Update = (props) => {
                             Name
                         </Form.Label>
                         <Col sm="8">
-                            <Form.Control type="text" plaintext readOnly value={firstName + ' ' + lastName} />
-                            <Form.Control type="text" />
+                            <Form.Control type="text" plaintext readOnly value={name !== null && name.firstName + ' ' + name.lastName} />
                         </Col>
                     </Form.Group>
 
@@ -48,7 +52,7 @@ const Update = (props) => {
                             Fees paid for
                         </Form.Label>
                         <Col sm="8">
-                            <Form.Control type='text' plaintext readOnly value={monthPaid} />
+                            <Form.Control type='text' plaintext readOnly value={monthPaid || "Not Paid"} />
                         </Col>
                     </Form.Group>
 

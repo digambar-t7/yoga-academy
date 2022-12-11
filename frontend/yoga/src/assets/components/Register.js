@@ -14,7 +14,7 @@ function Register() {
         contactno: '',
         gender: 'Male',
         city: '',
-        batch: '6-7AM',
+        currBatch: '6-7AM',
     })
 
     const [feeStatus, setFeeStatus] = useState(false)
@@ -36,7 +36,10 @@ function Register() {
     const registerMember = async (member) => {
         const response = await fetch('http://localhost:8080/api/v1/register', {
             method: "POST",
-            body: member
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(member)
         })
         const json = await response.json();
         console.log(json)
@@ -80,7 +83,7 @@ function Register() {
                         <Form.Control name='city' value={member.city} placeholder="City" onChange={handleMember} />
                     </Col>
                     <Col><Form.Label >Batch</Form.Label>
-                        <Form.Select defaultValue="choose" name='batch' value={member.batch} onChange={handleMember}>
+                        <Form.Select defaultValue="choose" name='batch' value={member.currBatch} onChange={handleMember}>
                             <option>6-7AM</option>
                             <option>7-8AM</option>
                             <option>8-9AM</option>
@@ -106,19 +109,3 @@ function Register() {
 }
 
 export default Register;
-
-// @Id
-//     @GeneratedValue(strategy = GenerationType.IDENTITY)
-//     private long id;
-//     @Embedded
-//     private Name name;   ddfa
-//     private String email;faasfa
-//     private LocalDate dob;dasafa
-//     private LocalDate doj;fafafas
-//     private LocalDate dateOfChange;fafafa
-//     private String contactno;fafafa
-//     private String paidMonth;affaa
-//     private String gender;fafa
-//     private String city;safafa
-//     private String currBatch; dsfsa
-//     private String nextBatch;

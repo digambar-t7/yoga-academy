@@ -4,16 +4,17 @@ import months from './Months';
 import Update from './Update';
 
 const Member = (props) => {
-    const { firstName, lastName, batch, email, paidMonth } = props.member;
+    const { name, currBatch, email, paidMonth } = props.member;
     const [modalShow, setModalShow] = useState(false);
+    console.log(props.member)
     return (
         <Card style={{ width: '18rem' }}>
             <Card.Body>
-                <Card.Title>{firstName + ' ' + lastName}</Card.Title>
+                <Card.Title>{name !== null && name.firstName + " " + name.lastName}</Card.Title>
                 <hr />
                 <Card.Text>
-                    <p>Batch : {batch}</p>
-                    <p>Fee Status : {paidMonth == months[new Date().getMonth()] ? 'Paid' : 'Not Paid'}</p>
+                    <p>Batch : {currBatch}</p>
+                    <p>Fee Status : {paidMonth === months[new Date().getMonth()] ? 'Paid' : 'Not Paid'}</p>
                     <p>Email : {email}</p>
                 </Card.Text>
                 <div className='d-flex justify-content-between'>
@@ -21,7 +22,7 @@ const Member = (props) => {
                 </div>
             </Card.Body>
             <Update
-                member={member}
+                member={props.member}
                 show={modalShow}
                 onHide={() => setModalShow(false)}
             />

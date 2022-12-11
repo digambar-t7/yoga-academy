@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import Member from './Member'
 import Container from 'react-bootstrap/Container';
 
@@ -15,12 +15,18 @@ const Members = () => {
         setMembers(json);
     }
 
+    useEffect(() => {
+        fetchAllMembers();
+        console.log(members)
+    }, [])
+
+
     return (
         <Container  >
             <h1 className='text-center pt-3'>Healthy Members of Yoga Academy</h1>
             <div className='row'>
                 {members.map((member) => {
-                    return <> <div className='col-md-4 my-3' key={member.id}>
+                    return <> <div className='col-md-4 my-3 w-40' key={member.id}>
                         <Member member={member} className="col-md-4" />
                     </div></>
                 })}
