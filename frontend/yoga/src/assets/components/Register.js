@@ -21,6 +21,17 @@ function Register() {
         paidMonth: null
     })
 
+    const getAge = (dateStr) => {
+        const today = new Date()
+        const dob = new Date(dateStr)
+        let age = today.getFullYear() - dob.getFullYear()
+        const n = today.getMonth() - dob.getMonth()
+        if (n < 0 || (n === 0 && today.getDate() < dob.getDate())) {
+            age--
+        }
+        return age
+    }
+
     const [errors, setErrors] = useState({})
 
     const handleMember = (e) => {
@@ -48,8 +59,15 @@ function Register() {
         if (email.length < 6) {
             newErrors.email = "Email invalid"
         }
+        let age = 0;
+        if (dob !== '')
+            age = getAge(dob)
         if (dob === '') {
             newErrors.dob = "Please enter your Date of Birth"
+        } else if (age < 18) {
+            newErrors.dob = "You need to atleast 18yrs old"
+        } else if (age > 65) {
+            newErrors.dob = "You need to below 65yrs old"
         }
         if (contactno.length !== 10) {
             newErrors.contactno = "Please enter valid contact number"
@@ -136,7 +154,7 @@ function Register() {
                         <Form.Control.Feedback type='invalid'>{errors.city}</Form.Control.Feedback>
                     </Col>
                     <Col><Form.Label >Batch</Form.Label>
-                        <Form.Select defaultValue="choose" name='currBatch' value={member.currBatch} isInvalid={errors.currBatch} onChange={handleMember} required>
+                        <Form.Select name='currBatch' value={member.currBatch} isInvalid={errors.currBatch} onChange={handleMember} required>
                             <option>Select batch timings</option>
                             <option>6-7AM</option>
                             <option>7-8AM</option>
@@ -148,7 +166,7 @@ function Register() {
                 </Row>
                 <Row>
                     <Col>
-                        <Button className='my-3' variant="primary" onClick={handlePayment} disabled={member.paidMonth}>
+                        <Button className='my-3' variant={member.paidMonth ? "success" : "danger"} onClick={handlePayment} >
                             {member.paidMonth ? 'Fees Paid' : 'Pay Fees : 500'}
                         </Button>
                     </Col>
