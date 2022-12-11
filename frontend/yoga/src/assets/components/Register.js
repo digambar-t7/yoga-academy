@@ -90,8 +90,7 @@ function Register() {
         if (Object.keys(newErrors).length > 0) {
             setErrors(newErrors)
         } else {
-            // registerMember(member);
-            console.log("Registration Successful")
+            registerMember(member);
         }
     }
 
@@ -105,7 +104,7 @@ function Register() {
             body: JSON.stringify(member)
         })
         const json = await response.json();
-        console.log(json)
+        console(json)
     }
 
     return (

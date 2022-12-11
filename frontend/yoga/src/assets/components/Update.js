@@ -3,25 +3,48 @@ import { Modal, Button, Form, Row, Col } from 'react-bootstrap';
 import months from './Months';
 
 const Update = (props) => {
-    const { name, email, currBatch, paidMonth } = props.member
+    const { id, name, email, currBatch, nextBatch, paidMonth } = props.member
     const [mem, setMem] = useState({
         email: email,
-        batch: currBatch,
+        batch: nextBatch || currBatch
     })
     const [feeStatus, setFeeStatus] = useState(paidMonth === months[new Date().getMonth()])
     const [monthPaid, setMonthPaid] = useState(paidMonth)
 
-    const submit = () => {
+    const handleSubmit = (e) => {
+        e.preventDefault()
         props.onHide();
-        console.log("submitted")
+        if (mem.batch !== nextBatch) {
+            shiftBatch()
+        }
     }
     const handlePayment = () => {
         setFeeStatus(!feeStatus)
         setMonthPaid(months[new Date().getMonth()])
+        makePayment()
     }
 
     const handleChange = (e) => {
         setMem({ ...mem, [e.target.name]: e.target.value })
+    }
+
+    // Make Payment API
+    const makePayment = async () => {
+        const response = await fetch(`http://localhost:8080/api/v1/makepayment/${id}`, {
+            method: "POST"
+        })
+        const json = await response.json();
+        alert(json)
+    }
+
+    // Shift Batch API
+    const shiftBatch = async () => {
+        const response = await fetch(`http://localhost:8080/api/v1/shiftbatch/?id=${id}&next=${mem.batch}`, {
+            method: "PUT",
+        })
+        const json = await response.json()
+        console.log(json)
+
     }
 
     return (
@@ -68,7 +91,7 @@ const Update = (props) => {
 
                     <Form.Group as={Row} className="mb-3" controlId="formPlaintextPassword">
                         <Form.Label column sm="4">
-                            Batch
+                            Next month's batch
                         </Form.Label>
                         <Col sm="8">
                             <Form.Select name="batch" value={mem.batch} onChange={handleChange}>
@@ -83,7 +106,7 @@ const Update = (props) => {
             </Modal.Body>
             <Modal.Footer>
                 <Button variant="success" disabled={feeStatus} onClick={handlePayment}>{feeStatus ? "Fees Paid" : "Pay Fees"}</Button>
-                <Button onClick={submit}>Update</Button>
+                <Button onClick={handleSubmit}>Update</Button>
                 <Button variant="danger" onClick={props.onHide}>Close</Button>
             </Modal.Footer>
         </Modal>

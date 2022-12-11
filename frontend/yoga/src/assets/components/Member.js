@@ -6,7 +6,7 @@ import Update from './Update';
 const Member = (props) => {
     const { name, currBatch, email, paidMonth } = props.member;
     const [modalShow, setModalShow] = useState(false);
-    console.log(props.member)
+
     return (
         <Card style={{ width: '18rem' }}>
             <Card.Body>

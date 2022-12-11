@@ -95,6 +95,7 @@ public class MemberServiceImpl implements MemberService {
         if (member.getNextBatch() == null || !member.getNextBatch().equals(next)) {
             member.setDateOfChange(LocalDate.now());
             member.setNextBatch(next);
+            this.memberRepository.save(member);
             return member;
         }
         return null;

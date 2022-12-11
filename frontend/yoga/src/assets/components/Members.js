@@ -17,7 +17,6 @@ const Members = () => {
 
     useEffect(() => {
         fetchAllMembers();
-        console.log(members)
     }, [])
 
 
