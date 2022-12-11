@@ -15,7 +15,6 @@ const Member = () => {
                     <p>Email : digambartu@gmail.com</p>
                 </Card.Text>
                 <div className='d-flex justify-content-between'>
-                    {/* <Button variant="info" size='sm' onClick={() => { setModalShow(true) }}>Change batch</Button> */}
                     <Button variant="info" onClick={() => { setModalShow(true) }} size='sm'>Update</Button>
                 </div>
             </Card.Body>

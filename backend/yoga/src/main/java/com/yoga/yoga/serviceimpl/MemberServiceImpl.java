@@ -41,6 +41,9 @@ public class MemberServiceImpl implements MemberService {
         if (member.getEmail() != null && this.memberRepository.findByEmail(member.getEmail()) != null) {
             throw new MemberAlreadyRegisteredException("An existing member found with the given Email ID.");
         }
+        if (member.getDoj() == null) {
+            member.setDoj(LocalDate.now());
+        }
         return this.memberRepository.save(member);
     }
 
