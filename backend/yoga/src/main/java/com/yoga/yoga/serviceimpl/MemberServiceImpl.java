@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 
 import com.yoga.yoga.entity.Member;
 import com.yoga.yoga.exceptions.AgeBeyondRangeException;
+import com.yoga.yoga.exceptions.InsufficientDetailsException;
 import com.yoga.yoga.exceptions.MemberAlreadyRegisteredException;
 import com.yoga.yoga.exceptions.MemberNotFoundException;
 import com.yoga.yoga.exceptions.PaymentDoneAlreadyException;
@@ -30,15 +31,24 @@ public class MemberServiceImpl implements MemberService {
     }
 
     @Override
-    public Member registerMember(Member member) throws AgeBeyondRangeException, MemberAlreadyRegisteredException {
+    public Member registerMember(Member member)
+            throws AgeBeyondRangeException, MemberAlreadyRegisteredException, InsufficientDetailsException {
+        if (member.getName() == null || member.getName().getFirstName() == null
+                || member.getName().getFirstName().length() < 2 || member.getName().getLastName() == null
+                || member.getName().getLastName().length() < 2 || member.getContactno() == null
+                || member.getContactno().length() != 10 || member.getEmail() == null || member.getEmail().length() < 6
+                || member.getDob() == null || member.getCity() == null || member.getCity().length() < 2
+                || member.getGender() == null || member.getCurrBatch() == null) {
+            throw new InsufficientDetailsException("Insufficient details provided for registration");
+        }
         int age = Period.between(member.getDob(), LocalDate.now()).getYears();
         if (age < 18 || age > 65) {
             throw new AgeBeyondRangeException("SORRY!!!Age is beyond the permissible range.");
         }
-        if (member.getContactno() != null && this.memberRepository.findByContactno(member.getContactno()) != null) {
+        if (this.memberRepository.findByContactno(member.getContactno()) != null) {
             throw new MemberAlreadyRegisteredException("An existing member found with the given contact no.");
         }
-        if (member.getEmail() != null && this.memberRepository.findByEmail(member.getEmail()) != null) {
+        if (this.memberRepository.findByEmail(member.getEmail()) != null) {
             throw new MemberAlreadyRegisteredException("An existing member found with the given Email ID.");
         }
         if (member.getDoj() == null) {

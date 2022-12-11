@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.yoga.yoga.entity.Member;
 import com.yoga.yoga.exceptions.AgeBeyondRangeException;
+import com.yoga.yoga.exceptions.InsufficientDetailsException;
 import com.yoga.yoga.exceptions.MemberAlreadyRegisteredException;
 import com.yoga.yoga.exceptions.MemberNotFoundException;
 import com.yoga.yoga.exceptions.PaymentDoneAlreadyException;
@@ -45,7 +46,7 @@ public class MemberController {
 
     @PostMapping("register")
     private ResponseEntity<Member> registerMember(@RequestBody Member member)
-            throws AgeBeyondRangeException, MemberAlreadyRegisteredException {
+            throws AgeBeyondRangeException, MemberAlreadyRegisteredException, InsufficientDetailsException {
         Member mem = this.memberService.registerMember(member);
         return ResponseEntity.status(201).body(mem);
     }
