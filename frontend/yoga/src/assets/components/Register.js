@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import months from './Months'
 import Col from 'react-bootstrap/Col';
 import Button from 'react-bootstrap/Button';
 import Container from 'react-bootstrap/Container';
@@ -7,29 +8,73 @@ import Row from 'react-bootstrap/Row';
 
 function Register() {
     const [member, setMember] = useState({
-        firstName: '',
-        lastName: '',
+        name: {
+            firstName: '',
+            lastName: '',
+        },
         email: '',
         dob: '',
         contactno: '',
-        gender: 'Male',
+        gender: '',
         city: '',
-        currBatch: '6-7AM',
+        currBatch: '',
+        paidMonth: null
     })
 
-    const [feeStatus, setFeeStatus] = useState(false)
+    const [errors, setErrors] = useState({})
 
     const handleMember = (e) => {
         setMember({ ...member, [e.target.name]: e.target.value });
+        setErrors({ ...errors, [e.target.name]: null })
+    }
+    const handleName = (e) => {
+        setMember({ ...member, name: { ...member.name, [e.target.name]: e.target.value } })
+        setErrors({ ...errors, [e.target.name]: null })
     }
     const handlePayment = () => {
-        setFeeStatus(!feeStatus);
+        setMember({ ...member, paidMonth: months[new Date().getMonth()] })
+    }
+
+    const handleErrors = () => {
+        const { name, email, dob, contactno, gender, city, currBatch } = member
+        console.log("errors : " + errors)
+        const newErrors = {}
+        if (name.firstName.length < 2) {
+            newErrors.firstName = "First name too short"
+        }
+        if (name.lastName.length < 2) {
+            newErrors.lastName = "Last name too short"
+        }
+        if (email.length < 6) {
+            newErrors.email = "Email invalid"
+        }
+        if (dob === '') {
+            newErrors.dob = "Please enter your Date of Birth"
+        }
+        if (contactno.length !== 10) {
+            newErrors.contactno = "Please enter valid contact number"
+        }
+        if (city.length < 2) {
+            newErrors.city = "Please enter valid city name"
+        }
+        if (!gender || gender === 'Choose gender') {
+            newErrors.gender = "Please enter your gender"
+        }
+        if (!currBatch || currBatch === 'Select batch timings') {
+            newErrors.currBatch = "Please select batch timings"
+        }
+        return newErrors;
     }
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        registerMember(member);
-        console.log(member)
+        const newErrors = handleErrors()
+        if (Object.keys(newErrors).length > 0) {
+            setErrors(newErrors)
+        } else {
+            // registerMember(member);
+            console.log("Registration Successful")
+        }
     }
 
     // Register Member API
@@ -52,49 +97,59 @@ function Register() {
                 <Row className='my-3'>
                     <Col>
                         <Form.Label >First Name</Form.Label>
-                        <Form.Control placeholder="First name" value={member.firstName} name='firstName' onChange={handleMember} />
+                        <Form.Control placeholder="First name" value={member.name.firstName} isInvalid={errors.firstName} name='firstName' onChange={handleName} required />
+                        <Form.Control.Feedback type='invalid'>{errors.firstName}</Form.Control.Feedback>
                     </Col>
                     <Col><Form.Label >Last Name</Form.Label>
-                        <Form.Control placeholder="Last name" value={member.lastName} name='lastName' onChange={handleMember} />
+                        <Form.Control placeholder="Last name" value={member.name.lastName} isInvalid={errors.lastName} name='lastName' onChange={handleName} required />
+                        <Form.Control.Feedback type='invalid'>{errors.lastName}</Form.Control.Feedback>
                     </Col>
                 </Row>
                 <Row className='my-3'>
                     <Col><Form.Label >Email</Form.Label>
-                        <Form.Control type='email' value={member.email} placeholder="Email" name='email' onChange={handleMember} />
+                        <Form.Control type='email' value={member.email} placeholder="Email" isInvalid={errors.email} name='email' onChange={handleMember} required />
+                        <Form.Control.Feedback type='invalid'>{errors.email}</Form.Control.Feedback>
                     </Col>
                     <Col><Form.Label >Contact No</Form.Label>
-                        <Form.Control type='tel' value={member.contactno} placeholder="Contact No" name='contactno' onChange={handleMember} />
+                        <Form.Control type='number' value={member.contactno} placeholder="Contact No" isInvalid={errors.contactno} name='contactno' onChange={handleMember} required />
+                        <Form.Control.Feedback type='invalid'>{errors.contactno}</Form.Control.Feedback>
                     </Col>
                 </Row>
                 <Row className='my-3'>
                     <Col><Form.Label >Date of Birth</Form.Label>
-                        <Form.Control type='date' value={member.dob} placeholder="Date of Birth" name='dob' onChange={handleMember} />
+                        <Form.Control type='date' value={member.dob} placeholder="Date of Birth" isInvalid={errors.dob} name='dob' onChange={handleMember} required />
+                        <Form.Control.Feedback type='invalid'>{errors.dob}</Form.Control.Feedback>
                     </Col>
                     <Col><Form.Label >Gender</Form.Label>
-                        <Form.Select name='gender' value={member.gender} onChange={handleMember} >
+                        <Form.Select name='gender' value={member.gender} isInvalid={errors.gender} onChange={handleMember} required >
+                            <option>Choose gender</option>
                             <option>Male</option>
                             <option>Female</option>
                             <option>Prefer not to say</option>
                         </Form.Select>
+                        <Form.Control.Feedback type='invalid'>{errors.gender}</Form.Control.Feedback>
                     </Col>
                 </Row>
                 <Row className='my-3'>
                     <Col><Form.Label >City</Form.Label>
-                        <Form.Control name='city' value={member.city} placeholder="City" onChange={handleMember} />
+                        <Form.Control name='city' value={member.city} placeholder="City" isInvalid={errors.city} onChange={handleMember} />
+                        <Form.Control.Feedback type='invalid'>{errors.city}</Form.Control.Feedback>
                     </Col>
                     <Col><Form.Label >Batch</Form.Label>
-                        <Form.Select defaultValue="choose" name='batch' value={member.currBatch} onChange={handleMember}>
+                        <Form.Select defaultValue="choose" name='currBatch' value={member.currBatch} isInvalid={errors.currBatch} onChange={handleMember} required>
+                            <option>Select batch timings</option>
                             <option>6-7AM</option>
                             <option>7-8AM</option>
                             <option>8-9AM</option>
                             <option>5-6PM</option>
                         </Form.Select>
+                        <Form.Control.Feedback type='invalid'>{errors.currBatch}</Form.Control.Feedback>
                     </Col>
                 </Row>
                 <Row>
                     <Col>
-                        <Button className='my-3' variant="primary" onClick={handlePayment} disabled={feeStatus}>
-                            {feeStatus ? 'Fees Paid' : 'Pay Fees : 500'}
+                        <Button className='my-3' variant="primary" onClick={handlePayment} disabled={member.paidMonth}>
+                            {member.paidMonth ? 'Fees Paid' : 'Pay Fees : 500'}
                         </Button>
                     </Col>
                     <Col>

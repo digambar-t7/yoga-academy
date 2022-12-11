@@ -21,7 +21,7 @@ const Update = (props) => {
     }
 
     const handleChange = (e) => {
-        setMem({ ...mem, [e.target.name]: [e.target.value] })
+        setMem({ ...mem, [e.target.name]: e.target.value })
     }
 
     return (
